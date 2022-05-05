@@ -1,8 +1,8 @@
-// { Driver Code Starts
+
 #include<bits/stdc++.h>
 using namespace std;
 
- // } Driver Code Ends
+
 class Solution
 {
 	public:
@@ -11,6 +11,8 @@ class Solution
     vector <int> dijkstra(int V, vector<vector<int>> eadj[], int S)
     {
         // Code here
+	// This Works for minimum path from Single source to all the remaining paths 
+	
         priority_queue<pair<int,int>,vector<pair<int,int>>,greater<pair<int,int>>>pq ;
         vector<int>dist(V,INT_MAX) ;
         dist[S] = 0 ;
@@ -32,9 +34,6 @@ class Solution
         return dist ;
     }
 };
-
-
-// { Driver Code Starts.
 
 
 int main()
@@ -70,5 +69,3 @@ int main()
 
     return 0;
 }
-
-  // } Driver Code Ends
