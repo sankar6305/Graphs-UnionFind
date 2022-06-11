@@ -1,71 +1,126 @@
 
+// Program to find Dijkstra's shortest path using
+// priority_queue in STL
 #include<bits/stdc++.h>
 using namespace std;
+# define INF 0x3f3f3f3f
 
+// iPair ==> Integer Pair
+typedef pair<int, int> iPair;
 
-class Solution
+// This class represents a directed graph using
+// adjacency list representation
+class Graph
 {
-	public:
-	//Function to find the shortest distance of all the vertices
-    //from the source vertex S.
-    vector <int> dijkstra(int V, vector<vector<int>> eadj[], int S)
-    {
-        // Code here
-	// This Works for minimum path from Single source to all the remaining paths 
-	
-        priority_queue<pair<int,int>,vector<pair<int,int>>,greater<pair<int,int>>>pq ;
-        vector<int>dist(V,INT_MAX) ;
-        dist[S] = 0 ;
-        pq.push({0,S}) ;
-        while(!pq.empty()) {
-            auto it = pq.top() ;
-            pq.pop() ;
-            int w1 = it.first ;
-            int adj = it.second ;
-            for( auto it : eadj[adj] ) {
-                int w1 = it[1] ;
-                int y1 = it[0] ;
-                if(dist[y1] > dist[adj] + w1 ) {
-                    dist[y1] = dist[adj] + w1 ;
-                    pq.push({w1,y1}) ;
-                }
-            }
-        }
-        return dist ;
-    }
+	int V; // No. of vertices
+
+	// In a weighted graph, we need to store vertex
+	// and weight pair for every edge
+	list< pair<int, int> > *adj;
+
+public:
+	Graph(int V); // Constructor
+
+	// function to add an edge to graph
+	void addEdge(int u, int v, int w);
+
+	// prints shortest path from s
+	void shortestPath(int s);
 };
 
+// Allocates memory for adjacency list
+Graph::Graph(int V)
+{
+	this->V = V;
+	adj = new list<iPair> [V];
+}
 
+void Graph::addEdge(int u, int v, int w)
+{
+	adj[u].push_back(make_pair(v, w));
+	adj[v].push_back(make_pair(u, w));
+}
+
+// Prints shortest paths from src to all other vertices
+void Graph::shortestPath(int src)
+{
+	// Create a priority queue to store vertices that
+	// are being preprocessed. This is weird syntax in C++.
+	// Refer below link for details of this syntax
+	// https://www.geeksforgeeks.org/implement-min-heap-using-stl/
+	priority_queue< iPair, vector <iPair> , greater<iPair> > pq;
+
+	// Create a vector for distances and initialize all
+	// distances as infinite (INF)
+	vector<int> dist(V, INF);
+
+	// Insert source itself in priority queue and initialize
+	// its distance as 0.
+	pq.push(make_pair(0, src));
+	dist[src] = 0;
+
+	/* Looping till priority queue becomes empty (or all
+	distances are not finalized) */
+	while (!pq.empty())
+	{
+		// The first vertex in pair is the minimum distance
+		// vertex, extract it from priority queue.
+		// vertex label is stored in second of pair (it
+		// has to be done this way to keep the vertices
+		// sorted distance (distance must be first item
+		// in pair)
+		int u = pq.top().second;
+		pq.pop();
+
+		// 'i' is used to get all adjacent vertices of a vertex
+		list< pair<int, int> >::iterator i;
+		for (i = adj[u].begin(); i != adj[u].end(); ++i)
+		{
+			// Get vertex label and weight of current adjacent
+			// of u.
+			int v = (*i).first;
+			int weight = (*i).second;
+
+			// If there is shorted path to v through u.
+			if (dist[v] > dist[u] + weight)
+			{
+				// Updating distance of v
+				dist[v] = dist[u] + weight;
+				pq.push(make_pair(dist[v], v));
+			}
+		}
+	}
+
+	// Print shortest distances stored in dist[]
+	printf("Vertex Distance from Source\n");
+	for (int i = 0; i < V; ++i)
+		printf("%d \t\t %d\n", i, dist[i]);
+}
+
+// Driver program to test methods of graph class
 int main()
 {
-    int t;
-    cin >> t;
-    while (t--) {
-        int V, E;
-        cin >> V >> E;
-        vector<vector<int>> adj[V];
-        int i=0;
-        while (i++<E) {
-            int u, v, w;
-            cin >> u >> v >> w;
-            vector<int> t1,t2;
-            t1.push_back(v);
-            t1.push_back(w);
-            adj[u].push_back(t1);
-            t2.push_back(u);
-            t2.push_back(w);
-            adj[v].push_back(t2);
-        }
-        int S;
-        cin>>S;
-        
-        Solution obj;
-    	vector<int> res = obj.dijkstra(V, adj, S);
-    	
-    	for(int i=0; i<V; i++)
-    	    cout<<res[i]<<" ";
-    	cout<<endl;
-    }
+	// create the graph given in above figure
+	int V = 9;
+	Graph g(V);
 
-    return 0;
+	// making above shown graph
+	g.addEdge(0, 1, 4);
+	g.addEdge(0, 7, 8);
+	g.addEdge(1, 2, 8);
+	g.addEdge(1, 7, 11);
+	g.addEdge(2, 3, 7);
+	g.addEdge(2, 8, 2);
+	g.addEdge(2, 5, 4);
+	g.addEdge(3, 4, 9);
+	g.addEdge(3, 5, 14);
+	g.addEdge(4, 5, 10);
+	g.addEdge(5, 6, 2);
+	g.addEdge(6, 7, 1);
+	g.addEdge(6, 8, 6);
+	g.addEdge(7, 8, 7);
+
+	g.shortestPath(0);
+
+	return 0;
 }
