@@ -16,8 +16,8 @@ vector<long long>SegmentedSeive(long long l,long long r) {
     vector<long long>CurrentPrimes(r-l+1, 1);
     vector<long long>ans;
     for(auto i : primes) {
-	    // l+i-1// (i*) is just find the nearest multiplier in the range 
-        for(long long j= max(i*i, (l+i-1)/i*i); j <= r; j+=i) {
+        //cout<<(l+i-1)/i<<" "<<i<<"\n";
+        for(long long j= max(i*i, ((l+i-1)/i)*i); j <= r; j+=i) {
             CurrentPrimes[j-l] = 0;
         }
     }
