@@ -8,6 +8,7 @@ class Solution {
 	void shortest_distance(vector<vector<int>>&matrix){
         int n = matrix.size() ;
         //cout<<n<<"\n";
+	// Here K is the middle element for the every pair of element in the graph...
         for( int k =0 ; k < n ; k++ ) {
             for( int i =0 ; i < n ; i++ ) {
                 for( int j =0 ; j < n ; j++ ) {
